@@ -14,13 +14,13 @@
   <a href="https://x.com/OmAI_lab">
     <img alt="X" src="https://img.shields.io/badge/%F0%9F%93%A3%20X-%E5%85%B3%E6%B3%A8%20%40OmAI_lab-000000">
   </a>
-  <a href="">
+  <a href="https://om-ai-lab.github.io/2026_06_27_vlx_seek_zh.html">
     <img alt="博客" src="https://img.shields.io/badge/%F0%9F%93%9D%20%E5%8D%9A%E5%AE%A2-%E9%98%85%E8%AF%BB%E6%96%87%E7%AB%A0-2563eb">
   </a>
   <a href="https://platform.om-agent.cn/subapp-index/#/front">
     <img alt="体验页面" src="https://img.shields.io/badge/%F0%9F%9A%80%20%E4%BD%93%E9%AA%8C%E9%A1%B5%E9%9D%A2-%E7%AB%8B%E5%8D%B3%E4%BD%93%E9%AA%8C-16a34a">
   </a>
-  <a href="">
+  <a href="https://huggingface.co/blog/omlab/vlx-seek">
     <img alt="Hugging Face 博客" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-%E9%98%85%E8%AF%BB%E6%96%87%E7%AB%A0-f9d54a">
   </a>
 </p>
@@ -29,11 +29,17 @@
 <p align="center"><sub>介绍视频：VLX-Seek 面向细粒度感知的多模态端侧模型</sub></p>
 
 <p align="center">
-  <a href="https://github.com/om-ai-lab/VLX-Seek/releases/download/v0.0.1/vll_seek_zh.mp4?raw=true" target="_blank">
-    <img src="assets/vll_seek_zh_cover.jpg" width="88%" alt="点击观看演示视频">
-  </a>
+  <video
+    controls
+    playsinline
+    preload="metadata"
+    width="88%"
+    poster="assets/vll_seek_zh_cover.jpg"
+  >
+    <source src="https://airesources.oss-cn-hangzhou.aliyuncs.com/Demo/VLX-Seek/vlx_seek_zh.mp4" type="video/mp4">
+    您的浏览器不支持视频播放，请 <a href="https://airesources.oss-cn-hangzhou.aliyuncs.com/Demo/VLX-Seek/vlx_seek_zh.mp4">点击观看视频</a>。
+  </video>
 </p>
-
 
 <p align="center">
   <img src="assets/vlx_seek_model_flow_realistic_visual_sources.png" alt="VLX-Seek 总览图：视觉来源、候选区域、区域 token 与 grounded output" width="88%">

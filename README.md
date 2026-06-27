@@ -14,13 +14,13 @@
   <a href="https://x.com/OmAI_lab">
     <img alt="X" src="https://img.shields.io/badge/%F0%9F%93%A3%20X-Follow%20%40OmAI_lab-000000">
   </a>
-  <a href="">
+  <a href="https://om-ai-lab.github.io/2026_06_27_vlx_seek_en.html">
     <img alt="Blog" src="https://img.shields.io/badge/%F0%9F%93%9D%20Blog-Read%20Article-2563eb">
   </a>
   <!-- <a href="https://platform.om-agent.cn/subapp-index/#/front"> -->
     <img alt="Demo coming soon" src="https://img.shields.io/badge/%F0%9F%9A%80%20Demo-Coming%20Soon-94a3b8">
   </a>
-  <a href="">
+  <a href="https://huggingface.co/blog/omlab/vlx-seek">
     <img alt="Hugging Face blog" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Read%20Blog-f9d54a">
   </a>
 </p>

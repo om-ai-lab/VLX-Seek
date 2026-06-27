@@ -131,11 +131,7 @@ This makes the inference path clear:
 
 Because the final grounded answer is expressed as region references, the language model spends fewer output tokens on localization. This matters on edge-side embodied systems, where faster decoding can reduce response latency for interactive perception, navigation, inspection, and human-robot interaction.
 
-## Examples
-
-<p align="center">
-  <img src="assets/vlx-seek-example.png" alt="VLX-Seek examples: OCR, detection, counting, grounding, region VQA, region captioning, referring expression comprehension, and visual region reasoning" width="88%">
-</p>
+## Capability Overview
 
 VLX-Seek supports a broad set of region-centric perception tasks:
 

@@ -128,11 +128,7 @@ SimpleFP 为 ViT 类视觉特征补足多尺度表达，使模型能够同时处
 3. 将语言查询与区域 token 匹配。
 4. 输出区域引用和自然语言推理。
 
-## 示例
-
-<p align="center">
-  <img src="assets/vlx-seek-example.png" alt="VLX-Seek 示例：OCR、检测、计数、grounding、区域 VQA、区域描述、指代表达理解和视觉区域推理" width="88%">
-</p>
+## 能力介绍
 
 VLX-Seek 支持多种区域中心的细粒度感知任务：
 

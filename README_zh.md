@@ -25,15 +25,9 @@
   </a>
 </p>
 
-
 <p align="center"><sub>介绍视频：VLX-Seek 面向细粒度感知的多模态端侧模型</sub></p>
 
 https://github.com/user-attachments/assets/74a4d0b3-bd82-4168-af4c-123029312252
-
-<p align="center">
-  <a href="https://airesources.oss-cn-hangzhou.aliyuncs.com/Demo/VLX-Seek/vlx_seek_zh.mp4">🎬 观看高清演示视频</a>
-</p>
-
 
 VLX-Seek 是一个面向端侧具身视觉的细粒度感知视觉语言模型。它关注的不是让模型只回答“画面里有什么”，而是让模型进一步知道目标在哪里、是哪一个实例、是否符合用户描述，以及目标不存在时是否应该拒识。
 

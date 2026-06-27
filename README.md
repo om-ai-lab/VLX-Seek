@@ -29,10 +29,6 @@
 
 https://github.com/user-attachments/assets/b5d04508-18f5-4096-8dd5-0349e1dd8e4b
 
-<p align="center">
-  <a href="https://airesources.oss-cn-hangzhou.aliyuncs.com/Demo/VLX-Seek/vlx_seek_en.mp4">🎬 Watch the HD demo video</a>
-</p>
-
 VLX-Seek is a fine-grained perception vision-language model for edge-side embodied vision. It is designed for scenarios where a model must not only understand what is in an image, but also identify where the relevant objects are, which instance is being referred to, and when a target does not exist.
 
 Instead of asking the language model to directly generate bounding-box coordinates, VLX-Seek reformulates localization as region retrieval and region reference. Candidate regions are encoded as addressable region tokens, and the language model answers by selecting, comparing, and referring to those regions.

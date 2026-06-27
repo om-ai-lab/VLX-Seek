@@ -28,8 +28,6 @@
 <p align="center"><sub>Overview video: VLX-Seek for edge multimodal fine-grained perception</sub></p>
 
 
-## Overview Figure
-
 <p align="center">
   <img src="assets/vlx_seek_model_flow_realistic_visual_sources.png" alt="VLX-Seek overview: visual sources, region proposals, region tokens, and grounded output" width="88%">
 </p>
@@ -206,3 +204,11 @@ Compared with simply attaching a detector head, VLX-Seek makes regions internal 
 ## Technology Lineage
 
 Our team has spent years building in visual perception, with open-source projects such as [OmDet-Turbo](https://github.com/om-ai-lab/OmDet), [VLM-R1](https://github.com/om-ai-lab/VLM-R1), and [VLM-FO1](https://github.com/om-ai-lab/VLM-FO1) receiving strong attention and recognition from the community. VLX-Seek brings together and extends these accumulated strengths in open-vocabulary detection, region-level understanding, and fine-grained perception as one of the latest works in the VLX series, which will continue to evolve through future updates.
+
+## Follow us
+
+Follow Om AI Lab on [X](https://x.com/OmAI_lab), or scan the WeChat group QR code below for VLX updates and discussion.
+
+<p align="left">
+  <img src="assets/qrcode.png" alt="WeChat community QR code" width="200">
+</p>

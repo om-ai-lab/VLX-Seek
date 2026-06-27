@@ -26,6 +26,7 @@
 </p>
 
 <p align="center"><sub>Overview video: VLX-Seek for edge multimodal fine-grained perception</sub></p>
+
 <p align="center">
   <video
     controls

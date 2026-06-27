@@ -26,6 +26,20 @@
 </p>
 
 <p align="center"><sub>Overview video: VLX-Seek for edge multimodal fine-grained perception</sub></p>
+<p align="center">
+  <video
+    controls
+    muted
+    loop
+    playsinline
+    preload="metadata"
+    width="100%"
+    style="display: block; max-width: 800px; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
+  >
+    <source src="assets/vlx_seek_en.mp4" type="video/mp4">
+    Your browser does not support video playback. Please <a href="assets/vlx_seek_en.mp4">download the overview video</a>.
+  </video>
+</p>
 
 
 <p align="center">

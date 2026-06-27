@@ -27,6 +27,20 @@
 
 
 <p align="center"><sub>介绍视频：VLX-Seek 面向细粒度感知的多模态端侧模型</sub></p>
+<p align="center">
+  <video
+    controls
+    muted
+    loop
+    playsinline
+    preload="metadata"
+    width="100%"
+    style="display: block; max-width: 800px; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
+  >
+    <source src="assets/vll_seek_zh.mp4" type="video/mp4">
+    您的浏览器不支持视频播放，请 <a href="assets/vll_seek_zh.mp4">下载介绍视频</a>。
+  </video>
+</p>
 
 
 <p align="center">

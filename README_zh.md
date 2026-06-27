@@ -26,14 +26,19 @@
 </p>
 
 
-<p align="center"><sub>介绍视频：VLX-Seek 面向细粒度感知的多模态端侧模型</sub></p>
 <p align="center">
-  <a href="assets/vll_seek_zh.mp4">
-    <img src="assets/vll_seek_zh_cover.jpg" alt="点击观看 VLX-Seek 中文介绍视频" width="88%">
-  </a>
-</p>
-<p align="center">
-  <a href="assets/vll_seek_zh.mp4">点击观看或下载介绍视频</a>
+  <video
+    controls
+    muted
+    playsinline
+    preload="metadata"
+    width="88%"
+    poster="assets/vll_seek_zh_cover.jpg"
+  >
+    <source src="https://airesources.oss-cn-hangzhou.aliyuncs.com/Demo/VLX-Seek/vll_seek_zh.mp4" type="video/mp4">
+    您的浏览器不支持视频播放，请
+    <a href="https://airesources.oss-cn-hangzhou.aliyuncs.com/Demo/VLX-Seek/vll_seek_zh.mp4">点击观看视频</a>。
+  </video>
 </p>
 
 

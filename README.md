@@ -27,12 +27,18 @@
 
 <p align="center"><sub>Overview video: VLX-Seek for edge multimodal fine-grained perception</sub></p>
 <p align="center">
-  <a href="assets/vlx_seek_en.mp4">
-    <img src="assets/vlx_seek_en_cover.jpg" alt="Click to watch the VLX-Seek overview video" width="88%">
-  </a>
-</p>
-<p align="center">
-  <a href="assets/vlx_seek_en.mp4">Watch or download the overview video</a>
+  <video
+    controls
+    muted
+    playsinline
+    preload="metadata"
+    width="88%"
+    poster="assets/vlx_seek_en_cover.jpg"
+  >
+    <source src="https://airesources.oss-cn-hangzhou.aliyuncs.com/Demo/VLX-Seek/vlx_seek_en.mp4" type="video/mp4">
+    Your browser does not support video playback. Please
+    <a href="https://airesources.oss-cn-hangzhou.aliyuncs.com/Demo/VLX-Seek/vlx_seek_en.mp4">watch the video</a>.
+  </video>
 </p>
 
 

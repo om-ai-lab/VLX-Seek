@@ -17,7 +17,7 @@
   <a href="https://om-ai-lab.github.io/2026_06_27_vlx_seek_zh.html">
     <img alt="博客" src="https://img.shields.io/badge/%F0%9F%93%9D%20%E5%8D%9A%E5%AE%A2-%E9%98%85%E8%AF%BB%E6%96%87%E7%AB%A0-2563eb">
   </a>
-  <a href="https://platform.om-agent.cn/subapp-index/#/front">
+  <a href="https://om-agent.cn/#/front">
     <img alt="体验页面" src="https://img.shields.io/badge/%F0%9F%9A%80%20%E4%BD%93%E9%AA%8C%E9%A1%B5%E9%9D%A2-%E7%AB%8B%E5%8D%B3%E4%BD%93%E9%AA%8C-16a34a">
   </a>
   <a href="https://huggingface.co/blog/omlab/vlx-seek">

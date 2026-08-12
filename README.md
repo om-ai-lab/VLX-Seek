@@ -14,27 +14,65 @@
   <a href="https://x.com/OmAI_lab">
     <img alt="X" src="https://img.shields.io/badge/%F0%9F%93%A3%20X-Follow%20%40OmAI_lab-000000">
   </a>
+  <a href="https://www.youtube.com/@OmAILab_global">
+    <img alt="YouTube" src="https://img.shields.io/badge/%F0%9F%93%A3%20YouTube-Subscribe%20%40OmAI%20lab-FF0000">
+  </a>
+  <a href="https://discord.gg/c3BNhbcyd">
+    <img alt="Discord" src="https://img.shields.io/badge/%F0%9F%93%A3%20Discord-Join%20%40OmAI%20lab-5865F2">
+  </a>
+  <br>
   <a href="https://om-ai-lab.github.io/2026_07_06_vlx_seek_1_5_en.html">
     <img alt="VLX-Seek 1.5 blog" src="https://img.shields.io/badge/%F0%9F%93%9D%20VLX--Seek%201.5-Read%20Blog-2563eb">
   </a>
-  <!-- <a href="https://platform.om-agent.cn/subapp-index/#/front"> -->
-    <img alt="Demo coming soon" src="https://img.shields.io/badge/%F0%9F%9A%80%20Demo-Coming%20Soon-94a3b8">
+  <a href="https://huggingface.co/blog/omlab/vlx-seek">
+    <img alt="Hugging Face blog" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Read%20Blog-f9d54a">
   </a>
   <a href="https://huggingface.co/omlab/VLX-Seek-1.5-10B">
     <img alt="Hugging Face model" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-f9d54a">
   </a>
-  <a href="https://huggingface.co/blog/omlab/vlx-seek">
-    <img alt="Hugging Face blog" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Read%20Blog-f9d54a">
+  <a href="https://om-agent.cn/#/front">
+    <img alt="Try VLX-Seek" src="https://img.shields.io/badge/%F0%9F%9A%80%20Demo-Try%20Now-16a34a">
   </a>
 </p>
 
 <p align="center"><sub>Overview video: VLX-Seek for edge multimodal fine-grained perception</sub></p>
 
-https://github.com/user-attachments/assets/b5d04508-18f5-4096-8dd5-0349e1dd8e4b
+https://www.youtube.com/watch?v=VoTLjBgCAKk
 
 VLX-Seek is a fine-grained perception vision-language model for edge-side embodied vision. It is designed for scenarios where a model must not only understand what is in an image, but also identify where the relevant objects are, which instance is being referred to, and when a target does not exist.
 
 Instead of asking the language model to directly generate bounding-box coordinates, VLX-Seek reformulates localization as region retrieval and region reference. Candidate regions are encoded as addressable region tokens, and the language model answers by selecting, comparing, and referring to those regions.
+
+> [!TIP]
+>
+> **🚀 Try [VLX-Seek](https://om-agent.cn/)** and explore how it understands, locates, and reasons about the visual world.
+
+## Community
+
+Join the VLX community to connect with developers, explore applications, share feedback, and shape the future of multimodal AI.
+
+<table align="center">
+  <thead>
+    <tr>
+      <th><div align="center">Official WeChat</div></th>
+      <th><div align="center">Discord Community</div></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center">
+        <img src="assets/WeChat.png" alt="VLX official WeChat QR code" width="220">
+      </td>
+      <td align="center">
+        <a href="https://discord.gg/c3BNhbcyd">
+          <img src="assets/Discord.png" alt="VLX Discord community QR code" width="220">
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+For technical support, partnerships, and community inquiries, contact us at **[marketing@hzlh.com](mailto:marketing@hzlh.com)**.
 
 ## Updates
 
@@ -177,6 +215,31 @@ python inference.py \
 
 Detection results are printed as JSON and visualized to `<image_stem>_result.png` by default. See the **[complete inference guide](docs/inference.md)** for all tasks, custom proposals, generation options, output fields, and the Python API.
 
+## VLX-Seek 1.5 Representative Examples
+
+The following examples demonstrate VLX-Seek 1.5's fine-grained perception and object localization across different device viewpoints. (<font color="#7c3aed"><strong><em>Click an image to view the full-resolution result and detection details</em></strong></font>)
+
+<table align="center" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
+  <tbody>
+    <tr>
+      <td width="43%" align="center" style="padding:0 2px">
+        <a href="assets/seek1.5-seek1.5-water bottles that are not on the cardboard box.png"><img src="assets/seek1.5-seek1.5-water bottles that are not on the cardboard box.png" alt="Robot viewpoint: water bottles that are not on the cardboard box" width="100%" style="display:block"></a>
+      </td>
+      <td width="57%" align="center" style="padding:0 2px">
+        <a href="assets/seek1.5-seek1.5-person riding electric bike.png"><img src="assets/seek1.5-seek1.5-person riding electric bike.png" alt="Drone viewpoint: person riding an electric bike" width="100%" style="display:block"></a>
+      </td>
+    </tr>
+    <tr>
+      <td width="43%" align="center" style="padding:0 2px">
+        <a href="assets/seek1.5-seek1.5-pedestrian.png"><img src="assets/seek1.5-seek1.5-pedestrian.png" alt="Drone viewpoint: pedestrian" width="100%" style="display:block"></a>
+      </td>
+      <td width="57%" align="center" style="padding:0 2px">
+        <a href="assets/seek1.5-seek1.5-car on the road.png"><img src="assets/seek1.5-seek1.5-car on the road.png" alt="Drone viewpoint: cars on the road" width="100%" style="display:block"></a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 ## Problem Setting
 
 Embodied and edge-side visual systems need stable spatial anchors. Monitoring cameras, drones, robots, robot dogs, mobile devices, and inspection systems often need to know not only "what is visible", but also:
@@ -314,11 +377,3 @@ The following figures report results for the original VLX-Seek 3B model. For VLX
 ## Technology Lineage
 
 Our team has spent years building in visual perception, with open-source projects such as [OmDet-Turbo](https://github.com/om-ai-lab/OmDet), [VLM-R1](https://github.com/om-ai-lab/VLM-R1), and [VLM-FO1](https://github.com/om-ai-lab/VLM-FO1) receiving strong attention and recognition from the community. VLX-Seek brings together and extends these accumulated strengths in open-vocabulary detection, region-level understanding, and fine-grained perception as one of the latest works in the VLX series, which will continue to evolve through future updates.
-
-## Follow us
-
-Follow Om AI Lab on [X](https://x.com/OmAI_lab), or scan the WeChat group QR code below for VLX updates and discussion.
-
-<p align="left">
-  <img src="assets/qrcode_0630.JPG" alt="WeChat community QR code" width="200">
-</p>

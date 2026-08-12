@@ -79,8 +79,8 @@ VLX-Seek 是一个面向端侧具身视觉的细粒度感知视觉语言模型�
 - **[2026-07-23]** 🔥🔥🔥 **VLX-Seek 1.5-10B** 推理代码与模型权重现已开源，权重下载地址：[omlab/VLX-Seek-1.5-10B](https://huggingface.co/omlab/VLX-Seek-1.5-10B)。
 - **[2026-07-06]** [VLX-Seek 1.5](https://om-ai-lab.github.io/2026_07_06_vlx_seek_1_5_zh.html) 正式发布，面向具身场景带来更强的细粒度感知、更快的推理速度，以及更可靠的缺失目标拒识能力。
 
-
 ## 项目概览
+
 <p align="center">
   <img src="assets/vlx_seek_model_flow_realistic_visual_sources.png" alt="VLX-Seek 总览图：视觉来源、候选区域、区域 token 与 grounded output" width="88%">
 </p>
@@ -115,8 +115,6 @@ VLX-Seek 1.5 规划了 0.6B、3B 和 10B 三种模型规模。本仓库开源 **
 | --- | --- | --- |
 | VLX-Seek 1.5-10B | [omlab/VLX-Seek-1.5-10B](https://huggingface.co/omlab/VLX-Seek-1.5-10B) | 已开源 |
 
-
-
 ### VLX-Seek 1.5 的主要更新
 
 - **更强的具身感知：** 扩充无人机、监控、机器人等视角和具身场景的训练数据。
@@ -134,13 +132,11 @@ VLX-Seek 1.5 规划了 0.6B、3B 和 10B 三种模型规模。本仓库开源 **
 
 ## 安装
 
-
 ```bash
 git clone https://github.com/om-ai-lab/VLX-Seek.git
 cd VLX-Seek
 pip install -r requirements.txt
 ```
-
 
 ## 模型权重
 
@@ -219,44 +215,28 @@ python inference.py \
 
 ## VLX-Seek 1.5 典型应用案例
 
-以下示例展示 VLX-Seek 1.5 在不同设备视角下的细粒度感知与目标定位能力（点击图片可查看大图与检测细节）。
+以下示例展示 VLX-Seek 1.5 在不同设备视角下的细粒度感知与目标定位能力。（<font color="#7c3aed"><strong><em>点击图片可查看大图与检测细节</em></strong></font>）
 
-<table align="center">
+<table align="center" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
   <tbody>
     <tr>
-      <th><div align="center">机器人视角</div></th>
-      <th><div align="center">移动设备视角</div></th>
+      <td width="43%" align="center" style="padding:0 2px">
+        <a href="assets/seek1.5-seek1.5-不在纸盒上的水瓶.png"><img src="assets/seek1.5-seek1.5-不在纸盒上的水瓶.png" alt="机器人视角：不在纸盒上的水瓶" width="100%" style="display:block"></a>
+      </td>
+      <td width="57%" align="center" style="padding:0 2px">
+        <a href="assets/seek1.5-seek1.5-骑电动车的人.png"><img src="assets/seek1.5-seek1.5-骑电动车的人.png" alt="无人机视角：骑电动车的人" width="100%" style="display:block"></a>
+      </td>
     </tr>
     <tr>
-      <td align="center">
-        <a href="assets/seek1.5-seek1.5-不在纸盒上的水瓶.png"><img src="assets/seek1.5-seek1.5-不在纸盒上的水瓶.png" alt="机器人视角：不在纸盒上的水瓶" height="230"></a>
+      <td width="43%" align="center" style="padding:0 2px">
+        <a href="assets/seek1.5-seek1.5-人.png"><img src="assets/seek1.5-seek1.5-人.png" alt="无人机视角：行人" width="100%" style="display:block"></a>
       </td>
-      <td align="center">
-        <a href="assets/seek1.5-seek1.5-易燃易爆物体.png"><img src="assets/seek1.5-seek1.5-易燃易爆物体.png" alt="移动设备视角：易燃易爆物体" height="230"></a>
+      <td width="57%" align="center" style="padding:0 2px">
+        <a href="assets/seek1.5-seek1.5-马路上的车.png"><img src="assets/seek1.5-seek1.5-马路上的车.png" alt="无人机视角：马路上的车" width="100%" style="display:block"></a>
       </td>
     </tr>
   </tbody>
 </table>
-
-<table align="center">
-  <tbody>
-    <tr>
-      <th colspan="3"><div align="center">无人机视角</div></th>
-    </tr>
-    <tr>
-      <td align="center">
-        <a href="assets/seek1.5-seek1.5-骑电动车的人.png"><img src="assets/seek1.5-seek1.5-骑电动车的人.png" alt="无人机视角：骑电动车的人" height="190"></a>
-      </td>
-      <td align="center">
-        <a href="assets/seek1.5-seek1.5-马路上的车.png"><img src="assets/seek1.5-seek1.5-马路上的车.png" alt="无人机视角：马路上的车" height="190"></a>
-      </td>
-      <td align="center">
-        <a href="assets/seek1.5-seek1.5-人.png"><img src="assets/seek1.5-seek1.5-人.png" alt="无人机视角：行人" height="190"></a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
 
 ## 问题设定
 
@@ -273,6 +253,7 @@ VLX-Seek 关注的核心问题是：
 > 如何让 VLM 获得细粒度定位能力、提升推理效率，并避免让语言模型生成脆弱的坐标字符串？
 
 VLX-Seek 的答案是：
+
 > 把视觉区域变成语言模型可以寻址和引用的实体。
 
 ## 区域引用
@@ -382,11 +363,8 @@ VLX-Seek 不只学习“如何找到目标”，也学习“什么时候不该�
 ## 为什么是 VLX-Seek
 
 - 相比通用 VLM，VLX-Seek 显式建模候选视觉区域，可以把回答锚定到具体对象实例。
-
 - 相比传统检测器，VLX-Seek 能利用自然语言、开放词汇语义和视觉推理，而不只是预测封闭类别。
-
 - 相比坐标生成式 VLM，VLX-Seek 避免输出较长的数字坐标序列，改用更短、更稳定的区域引用，可降低多目标场景下的解码开销并提升响应速度。
-
 - 相比简单外接检测头的方案，VLX-Seek 把区域变成模型内部可以读取和引用的视觉语言实体，使区域能够参与推理、比较、对话和解释。
 
 ## 技术脉络

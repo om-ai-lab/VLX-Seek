@@ -43,7 +43,9 @@ VLX-Seek 是一个面向端侧具身视觉的细粒度感知视觉语言模型�
 
 不同于让语言模型直接生成边界框坐标，VLX-Seek 将定位任务改写为区域检索与区域引用问题。候选区域会被编码成区域 token，语言模型通过选择、比较和引用这些区域来完成 grounded 输出。
 
-**🚀 立即[体验 VLX-Seek](https://om-agent.cn/)**，探索它如何理解、定位视觉世界并进行推理。
+> [!TIP]
+>
+> **🚀 立即[体验 VLX-Seek](https://om-agent.cn/)**，探索它如何理解、定位视觉世界并进行推理。
 
 ## 社区
 
@@ -214,6 +216,47 @@ python inference.py \
 ```
 
 检测结果默认以 JSON 打印，并可视化保存到 `<image_stem>_result.png`。所有任务、自定义 proposals、生成参数、输出字段和 Python API 请参阅**[完整推理指南](docs/inference_zh.md)**。
+
+## VLX-Seek 1.5 典型应用案例
+
+以下示例展示 VLX-Seek 1.5 在不同设备视角下的细粒度感知与目标定位能力。
+
+<table align="center">
+  <tbody>
+    <tr>
+      <th><div align="center">机器人视角</div></th>
+      <th><div align="center">移动设备视角</div></th>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="assets/seek1.5-seek1.5-不在纸盒上的水瓶.png" alt="机器人视角：不在纸盒上的水瓶" height="230">
+      </td>
+      <td align="center">
+        <img src="assets/seek1.5-seek1.5-易燃易爆物体.png" alt="移动设备视角：易燃易爆物体" height="230">
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table align="center">
+  <tbody>
+    <tr>
+      <th colspan="3"><div align="center">无人机视角</div></th>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="assets/seek1.5-seek1.5-骑电动车的人.png" alt="无人机视角：骑电动车的人" height="190">
+      </td>
+      <td align="center">
+        <img src="assets/seek1.5-seek1.5-马路上的车.png" alt="无人机视角：马路上的车" height="190">
+      </td>
+      <td align="center">
+        <img src="assets/seek1.5-seek1.5-人.png" alt="无人机视角：行人" height="190">
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 
 ## 问题设定
 

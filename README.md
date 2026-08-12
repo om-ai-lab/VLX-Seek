@@ -37,7 +37,9 @@
 
 <p align="center"><sub>Overview video: VLX-Seek for edge multimodal fine-grained perception</sub></p>
 
-https://www.youtube.com/watch?v=VoTLjBgCAKk
+https://github.com/user-attachments/assets/b5d04508-18f5-4096-8dd5-0349e1dd8e4b
+
+<p align="center"><sub>📺 HD version: <a href="https://www.youtube.com/watch?v=VoTLjBgCAKk">Watch on YouTube</a></sub></p>
 
 VLX-Seek is a fine-grained perception vision-language model for edge-side embodied vision. It is designed for scenarios where a model must not only understand what is in an image, but also identify where the relevant objects are, which instance is being referred to, and when a target does not exist.
 

@@ -219,7 +219,7 @@ python inference.py \
 
 ## VLX-Seek 1.5 典型应用案例
 
-以下示例展示 VLX-Seek 1.5 在不同设备视角下的细粒度感知与目标定位能力。
+以下示例展示 VLX-Seek 1.5 在不同设备视角下的细粒度感知与目标定位能力（点击图片可查看大图与检测细节）。
 
 <table align="center">
   <tbody>
@@ -229,10 +229,10 @@ python inference.py \
     </tr>
     <tr>
       <td align="center">
-        <img src="assets/seek1.5-seek1.5-不在纸盒上的水瓶.png" alt="机器人视角：不在纸盒上的水瓶" height="230">
+        <a href="assets/seek1.5-seek1.5-不在纸盒上的水瓶.png"><img src="assets/seek1.5-seek1.5-不在纸盒上的水瓶.png" alt="机器人视角：不在纸盒上的水瓶" height="230"></a>
       </td>
       <td align="center">
-        <img src="assets/seek1.5-seek1.5-易燃易爆物体.png" alt="移动设备视角：易燃易爆物体" height="230">
+        <a href="assets/seek1.5-seek1.5-易燃易爆物体.png"><img src="assets/seek1.5-seek1.5-易燃易爆物体.png" alt="移动设备视角：易燃易爆物体" height="230"></a>
       </td>
     </tr>
   </tbody>
@@ -245,13 +245,13 @@ python inference.py \
     </tr>
     <tr>
       <td align="center">
-        <img src="assets/seek1.5-seek1.5-骑电动车的人.png" alt="无人机视角：骑电动车的人" height="190">
+        <a href="assets/seek1.5-seek1.5-骑电动车的人.png"><img src="assets/seek1.5-seek1.5-骑电动车的人.png" alt="无人机视角：骑电动车的人" height="190"></a>
       </td>
       <td align="center">
-        <img src="assets/seek1.5-seek1.5-马路上的车.png" alt="无人机视角：马路上的车" height="190">
+        <a href="assets/seek1.5-seek1.5-马路上的车.png"><img src="assets/seek1.5-seek1.5-马路上的车.png" alt="无人机视角：马路上的车" height="190"></a>
       </td>
       <td align="center">
-        <img src="assets/seek1.5-seek1.5-人.png" alt="无人机视角：行人" height="190">
+        <a href="assets/seek1.5-seek1.5-人.png"><img src="assets/seek1.5-seek1.5-人.png" alt="无人机视角：行人" height="190"></a>
       </td>
     </tr>
   </tbody>

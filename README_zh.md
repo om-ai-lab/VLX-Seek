@@ -14,17 +14,24 @@
   <a href="https://x.com/OmAI_lab">
     <img alt="X" src="https://img.shields.io/badge/%F0%9F%93%A3%20X-%E5%85%B3%E6%B3%A8%20%40OmAI_lab-000000">
   </a>
+  <a href="https://www.youtube.com/@OmAILab_global">
+    <img alt="YouTube" src="https://img.shields.io/badge/%F0%9F%93%A3%20YouTube-%E8%AE%A2%E9%98%85%40OmAI%20lab-FF0000">
+  </a>
+  <a href="https://discord.gg/c3BNhbcyd">
+    <img alt="Discord" src="https://img.shields.io/badge/%F0%9F%93%A3%20Discord-%E5%8A%A0%E5%85%A5%40OmAI%20lab-5865F2">
+  </a>
+  <br>
   <a href="https://om-ai-lab.github.io/2026_07_06_vlx_seek_1_5_zh.html">
     <img alt="VLX-Seek 1.5 博客" src="https://img.shields.io/badge/%F0%9F%93%9D%20VLX--Seek%201.5-%E9%98%85%E8%AF%BB%E5%8D%9A%E5%AE%A2-2563eb">
   </a>
-  <a href="https://om-agent.cn/#/front">
-    <img alt="体验页面" src="https://img.shields.io/badge/%F0%9F%9A%80%20%E4%BD%93%E9%AA%8C%E9%A1%B5%E9%9D%A2-%E7%AB%8B%E5%8D%B3%E4%BD%93%E9%AA%8C-16a34a">
+  <a href="https://huggingface.co/blog/omlab/vlx-seek">
+    <img alt="Hugging Face 博客" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-%E9%98%85%E8%AF%BB%E6%96%87%E7%AB%A0-f9d54a">
   </a>
   <a href="https://huggingface.co/omlab/VLX-Seek-1.5-10B">
     <img alt="Hugging Face 模型" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-%E6%A8%A1%E5%9E%8B-f9d54a">
   </a>
-  <a href="https://huggingface.co/blog/omlab/vlx-seek">
-    <img alt="Hugging Face 博客" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-%E9%98%85%E8%AF%BB%E6%96%87%E7%AB%A0-f9d54a">
+  <a href="https://om-agent.cn/#/front">
+    <img alt="体验页面" src="https://img.shields.io/badge/%F0%9F%9A%80%20%E4%BD%93%E9%AA%8C%E9%A1%B5%E9%9D%A2-%E7%AB%8B%E5%8D%B3%E4%BD%93%E9%AA%8C-16a34a">
   </a>
 </p>
 
@@ -36,11 +43,39 @@ VLX-Seek 是一个面向端侧具身视觉的细粒度感知视觉语言模型�
 
 不同于让语言模型直接生成边界框坐标，VLX-Seek 将定位任务改写为区域检索与区域引用问题。候选区域会被编码成区域 token，语言模型通过选择、比较和引用这些区域来完成 grounded 输出。
 
+**🚀 立即[体验 VLX-Seek](https://om-agent.cn/)**，探索它如何理解、定位视觉世界并进行推理。
+
+## 社区
+
+加入 VLX 社区，与开发者交流、探索应用、分享反馈，并共同塑造多模态 AI 的未来。
+
+<table align="center">
+  <thead>
+    <tr>
+      <th><div align="center">官方微信</div></th>
+      <th><div align="center">Discord 社区</div></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center">
+        <img src="assets/WeChat.png" alt="VLX 微信社群二维码" width="220">
+      </td>
+      <td align="center">
+        <a href="https://discord.gg/c3BNhbcyd">
+          <img src="assets/Discord.png" alt="VLX Discord 社区二维码" width="220">
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+如需技术支持、商务合作或社区咨询，请通过 **[marketing@hzlh.com](mailto:marketing@hzlh.com)** 与我们联系。
+
 ## 更新
 
 - **[2026-07-23]** 🔥🔥🔥 **VLX-Seek 1.5-10B** 推理代码与模型权重现已开源，权重下载地址：[omlab/VLX-Seek-1.5-10B](https://huggingface.co/omlab/VLX-Seek-1.5-10B)。
 - **[2026-07-06]** [VLX-Seek 1.5](https://om-ai-lab.github.io/2026_07_06_vlx_seek_1_5_zh.html) 正式发布，面向具身场景带来更强的细粒度感知、更快的推理速度，以及更可靠的缺失目标拒识能力。
-
 
 
 ## 项目概览
@@ -314,11 +349,3 @@ VLX-Seek 不只学习“如何找到目标”，也学习“什么时候不该�
 ## 技术脉络
 
 我们团队长期深耕视觉感知领域，此前推出的 [OmDet-Turbo](https://github.com/om-ai-lab/OmDet)、[VLM-R1](https://github.com/om-ai-lab/VLM-R1) 与 [VLM-FO1](https://github.com/om-ai-lab/VLM-FO1) 等开源项目在社区获得了广泛关注和认可。VLX-Seek 汇聚并延续了这些工作在开放词汇检测、区域级理解与细粒度感知上的技术积累，是 VLX 系列的最新作品之一，后续也将持续更新迭代。
-
-## 关注我们
-
-您可以通过 [X](https://x.com/OmAI_lab) 关注 Om AI Lab，或扫描下方微信社群二维码关注 VLX 的更新与讨论。
-
-<p align="left">
-  <img src="assets/qrcode_0630.JPG" alt="微信社群二维码" width="200">
-</p>

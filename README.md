@@ -30,7 +30,7 @@
   <a href="https://huggingface.co/omlab/VLX-Seek-1.5-10B">
     <img alt="Hugging Face model" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-f9d54a">
   </a>
-  <a href="https://om-agent.cn/#/front">
+  <a href="https://om-agent.com/#/front">
     <img alt="Try VLX-Seek" src="https://img.shields.io/badge/%F0%9F%9A%80%20Demo-Try%20Now-16a34a">
   </a>
 </p>
@@ -47,7 +47,7 @@ Instead of asking the language model to directly generate bounding-box coordinat
 
 > [!TIP]
 >
-> **🚀 Try [VLX-Seek](https://om-agent.cn/)** and explore how it understands, locates, and reasons about the visual world.
+> **🚀 Try [VLX-Seek](https://om-agent.com/)** and explore how it understands, locates, and reasons about the visual world.
 
 ## Community
 

@@ -8,7 +8,7 @@ import torch
 
 _BACKENDS = {
     "auto": "auto", "nvidia": "cuda", "cuda": "cuda",
-    "ascend": "npu", "910b": "npu", "npu": "npu",
+    "ascend": "npu", "910b": "npu", "310p": "npu", "npu": "npu",
     "cpu": "cpu", "apple": "mps", "mps": "mps",
 }
 
@@ -16,10 +16,11 @@ _BACKENDS = {
 def _npu_available(required=False):
     try:
         importlib.import_module("torch_npu")
+        torch.npu.set_compile_mode(jit_compile=False)
     except ImportError as exc:
         if required:
             raise RuntimeError(
-                "Ascend backend requires torch_npu. Use the 910B Docker image "
+                "Ascend backend requires torch_npu. Use a matching Ascend Docker image "
                 "or install a torch_npu build matching PyTorch."
             ) from exc
         return False
@@ -35,7 +36,7 @@ def resolve_device(device=None):
         backend = os.environ.get("VLX_SEEK_BACKEND", "auto").strip().lower()
         if backend not in _BACKENDS:
             raise ValueError(
-                "VLX_SEEK_BACKEND must be auto, nvidia/cuda, ascend/npu, "
+                "VLX_SEEK_BACKEND must be auto, nvidia/cuda, ascend/npu/910b/310p, "
                 "cpu, or apple/mps."
             )
         device = _BACKENDS[backend]
@@ -68,11 +69,23 @@ def resolve_device(device=None):
     return torch.device(device)
 
 
+def is_ascend_310p(device):
+    """Identify chips without the FlashAttentionScore/910B FLA kernels."""
+    return device.type == "npu" and "310p" in torch.npu.get_device_name(device).lower()
+
+
 def attention_implementation(device):
-    """Keep accelerated attention on CUDA/NPU and portable CPU/MPS paths."""
+    """Use portable attention on 310P, CPU and MPS."""
+    if is_ascend_310p(device):
+        return "sdpa"
     return "flash_attention_2" if device.type in ("cuda", "npu") else "sdpa"
 
 
 def inference_dtype(device):
-    """Use FP16 on MPS, including macOS versions without BF16 support."""
-    return torch.float16 if device.type == "mps" else torch.bfloat16
+    """Use FP16 on MPS and Ascend chips without BF16 support."""
+    if device.type == "mps":
+        return torch.float16
+    if device.type == "npu":
+        with torch.npu.device(device):
+            return torch.bfloat16 if torch.npu.is_bf16_supported() else torch.float16
+    return torch.bfloat16

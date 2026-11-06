@@ -14,6 +14,7 @@ import torch
 from PIL import Image
 
 from vlx_seek.hardware import resolve_device
+from vlx_seek.parallel import initialize_tensor_parallel, run_on_rank_zero
 from vlx_seek.models.vlx_seek_1_5.constants import (
     DEFAULT_IMAGE_TOKEN,
     DEFAULT_IM_END_TOKEN,
@@ -41,12 +42,13 @@ class VLXSeekWorker:
     auxiliary visual-prompt encoder and is required by region-level tasks.
     """
 
-    def __init__(self, model_path: str, device: str | torch.device | None = None):
-        self.device = resolve_device(device)
+    def __init__(self, model_path: str, device: str | torch.device | None = None, tp_size: int = 1):
+        self.tp_size = tp_size
+        self.device = initialize_tensor_parallel(resolve_device(device), tp_size)
         from vlx_seek.models.vlx_seek_1_5.builder import load_pretrained_model
 
         self.tokenizer, self.model, image_processors = load_pretrained_model(
-            model_path, device=self.device
+            model_path, device=self.device, tp_size=tp_size
         )
         self.image_processor, self.image_processor_aux = image_processors
         self.model.eval()
@@ -248,6 +250,9 @@ class VLXSeekWorker:
             ],
         }
         if do_sample:
+            if self.tp_size > 1:
+                seed = run_on_rank_zero(lambda: random.getrandbits(63), self.tp_size)
+                torch.manual_seed(seed)
             generate_kwargs.update(temperature=temperature, top_p=top_p)
         output_ids = self.model.generate(**generate_kwargs)
         completion_ids = output_ids[0, input_ids.shape[1] :]

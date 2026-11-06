@@ -164,6 +164,7 @@ For driver requirements, platform-specific images, and `docker run` commands, se
 - [NVIDIA x86 GPUs (A100, RTX 4090, etc.)](docs/inference.md#docker-inference-on-nvidia-x86-eg-a100)
 - [Jetson T5000](docs/inference.md#t5000-docker-run)
 - [NVIDIA Spark GB10](docs/inference.md#gb10-docker-run)
+- [Ascend 310P (aarch64)](docs/inference.md#docker-inference-on-ascend-310p-aarch64)
 - [Ascend 910B (aarch64), with NPU FLA support](docs/inference.md#docker-inference-on-ascend-910b-aarch64)
 
 Set `VLX_SEEK_BACKEND=nvidia` or `ascend` to select hardware, or leave it as `auto` (default). See [hardware selection](docs/inference.md#hardware-selection) for details.

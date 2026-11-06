@@ -10,3 +10,5 @@ demo/demo_image_result.png
 fusion_result.json
 .cache/
 .DS_Store
+kernel_meta/
+config/

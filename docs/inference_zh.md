@@ -40,7 +40,7 @@ resources/
 | --- | --- |
 | `auto`（默认） | 优先检测 NVIDIA CUDA，再检测昇腾 NPU、Apple MPS，否则使用 CPU |
 | `nvidia` | NVIDIA CUDA GPU |
-| `ascend` | 昇腾 NPU，当前已在 910B 上验证 |
+| `ascend` / `310p` | 昇腾 NPU，已在 910B 和 310P3 上验证 |
 | `cpu` | CPU，使用 SDPA 注意力 |
 | `apple` / `mps` | Apple Silicon GPU，使用 MPS 和 SDPA 注意力 |
 
@@ -76,7 +76,7 @@ pip install -r requirements_mac.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 在已激活的环境中运行推理：
 
 ```bash
-python inference.py --device mps --task detection --text "orange; apple"
+bash scripts/run_mac.sh
 ```
 
 MPS 默认使用 FP16 模型权重、SDPA 注意力和 PyTorch 线性注意力实现，候选框检测器也在 MPS 上运行。由于 torchvision 没有原生 MPS ROIAlign 内核，该算子以 FP32 在 CPU 上计算，然后将特征传回 MPS。此路径无需安装 Flash Attention、Triton 或 CUDA FLA 内核。
@@ -89,7 +89,7 @@ MPS 默认使用 FP16 模型权重、SDPA 注意力和 PyTorch 线性注意力�
 The fast path is not available because one of the required library is not installed. Falling back to torch implementation.
 ```
 
-在 NVIDIA GPU 上，安装 [flash-linear-attention](https://github.com/fla-org/flash-linear-attention#installation) 和 [causal-conv1d](https://github.com/Dao-AILab/causal-conv1d) 可以启用快速路径。NPU 加速方式请参阅下文的[昇腾 910B 推理说明](#昇腾-910baarch64docker-推理)。
+在 NVIDIA GPU 上，安装 [flash-linear-attention](https://github.com/fla-org/flash-linear-attention#installation) 和 [causal-conv1d](https://github.com/Dao-AILab/causal-conv1d) 可以启用快速路径。NPU 加速方式请参阅下文的[昇腾 310P](#昇腾-310paarch64-docker-推理)和[910B](#昇腾-910baarch64docker-推理)说明。
 
 ## NVIDIA x86（如 A100）Docker 推理
 
@@ -146,12 +146,7 @@ docker exec -it seek-dev bash
 ### 在容器内执行推理
 
 ```bash
-python inference.py \
-  --model-path omlab/VLX-Seek-1.5-10B \
-  --image-path demo/demo_image.jpg \
-  --task detection \
-  --text "橘子; 苹果" \
-  --lang zh
+bash scripts/run_nvidia_x86.sh
 ```
 
 首次运行需要访问 Hugging Face，以下载主模型，并在需要候选框时下载 `resources/wedetect_base_uni.pth`。如使用本地主模型权重，将其放在宿主机仓库的 `resources/VLX-Seek-1.5-10B/` 目录，再将参数改为 `--model-path resources/VLX-Seek-1.5-10B`。Docker 镜像不包含模型权重。
@@ -214,7 +209,98 @@ docker exec -it seek-dev bash
 
 本地没有镜像时，`docker run` 会自动拉取对应镜像。两条命令均将仓库挂载到 `/workspace`，将容器端口 `8000` 映射到宿主机端口 `1233`，并使用容器名 `seek-dev`。切换平台前请先停止并移除同名容器。
 
-进入容器后，在 `/workspace` 下执行 NVIDIA x86 小节中的推理命令。模型下载、本地权重路径及结果路径的使用方式与上文相同。
+进入对应容器后，在 `/workspace` 下分别运行 `bash scripts/run_t5000.sh` 或
+`bash scripts/run_spark_gb10.sh`。模型下载和本地权重路径的使用方式与
+NVIDIA x86 小节相同。
+
+## 昇腾 310P（aarch64）Docker 推理
+
+Linux aarch64 主机可使用预构建的 310P 镜像：
+`registry.linker.cc/vlx/vlx-seek:py3.11-openeuler24.03-310p-aarch64`。
+镜像已包含 `/opt/ascend/custom_transformer` 下的 AscendC GDN 算子包。
+宿主机需安装 Docker 和可用的昇腾驱动。在仓库根目录拉取镜像并启动容器
+（无需挂载 `.cache`）：
+
+```bash
+docker pull registry.linker.cc/vlx/vlx-seek:py3.11-openeuler24.03-310p-aarch64
+docker run -d --name seek-dev \
+  --entrypoint sleep \
+  --device /dev/davinci0 \
+  --device /dev/davinci_manager \
+  --device /dev/devmm_svm \
+  --device /dev/hisi_hdc \
+  --shm-size=10g \
+  -v /usr/local/dcmi:/usr/local/dcmi \
+  -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi \
+  -v /usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64 \
+  -v /usr/local/Ascend/driver/version.info:/usr/local/Ascend/driver/version.info \
+  -v /etc/ascend_install.info:/etc/ascend_install.info \
+  -v "$PWD:/workspace" -w /workspace \
+  -e VLX_SEEK_BACKEND=ascend \
+  registry.linker.cc/vlx/vlx-seek:py3.11-openeuler24.03-310p-aarch64 \
+  infinity
+docker exec -it seek-dev bash
+```
+
+如需使用其他 NPU，将 `/dev/davinci0` 替换为 `npu-smi info` 显示的设备编号。
+仓库挂载用于提供源码和保存结果；Python 依赖及 310P 算子包由镜像提供。
+
+进入容器后，在 `/workspace` 下执行推理：
+
+```bash
+cd /workspace
+bash scripts/run_310p.sh
+```
+
+程序按实际芯片型号自动选择兼容路径：310P 使用 FP16 权重和 SDPA 注意力。
+上述镜像已包含 AscendC GDN 算子包，无需挂载 `.cache` 或在运行时 source
+`set_env.bash`。在该镜像中，`full` 模式会对支持的 GDN 调用使用 AscendC；
+不含算子包的镜像会回退到 PyTorch 线性注意力。构建方式见
+[310P FLA 配置](npu_fla_zh.md#ascend-npu-的-fla-推理加速)。
+
+`torchvision::nms` 的 CPU 回退警告不影响运行。首次推理可能包含算子编译，
+应将首次耗时与预热后的耗时分开比较。此处验证的是推理流程，未验证 310P 训练。
+
+在 310P3、CANN 9.0.1、PyTorch 2.9.0、torch_npu 2.9.0.post4、
+Transformers 5.13.0 环境实测：默认示例图检测连续运行 10 次，最终识别出
+5 个橘子和 2 个苹果，生成 19 个 token。首轮约 59.4 秒，后续每轮约 9.3 秒，
+计时不含模型加载及 WeDetect 候选框生成。这些样例不代表其他输入的精度或性能保证。
+
+#### 双卡张量并行（TP=2）
+
+当前机器的两个 310P3 逻辑设备已通过 HCCL AllReduce / AllGather 和双卡检测验证。
+容器内使用仓库的 310P 脚本启动双进程检测：
+
+```bash
+cd /workspace
+TP_SIZE=2 bash scripts/run_310p.sh
+```
+
+也可以直接用 `torchrun` 启动检测：
+
+```bash
+torchrun --standalone --nproc-per-node=2 inference.py \
+  --tp-size 2 --task detection --text "orange; apple"
+```
+
+`--tp 2` 是 `--tp-size 2` 的别名。两个进程分别绑定 `npu:0` 和 `npu:1`，
+不要指定固定的 `--device npu:0`。不指定 TP 时保持单卡运行。
+文本模型使用 Transformers 自带的 TP 方案切分注意力和 MLP 投影，输出层也切分；
+视觉编码器、词嵌入和线性注意力的部分计算仍在每张卡上保留。
+因此显存占用和耗时不会简单减半。310P 仍使用 FP16 和 SDPA；GDN 按上述配置
+根据镜像内是否包含算子包使用 AscendC 或回退到 PyTorch。
+WeDetect 只在 rank 0 运行，候选框通过 CPU Gloo 通信同步，结果和可视化也只由
+rank 0 输出。其他 310P 板卡组合需先确认 HCCL 通信支持。
+
+同一检测示例的 TP=2 实测共运行 10 轮，首轮约 24.0 秒，后续 9 轮平均
+5.946 秒，最终答案和目标框与此前单卡样例相同，均生成 19 个 token。
+上述计时不含权重加载和 WeDetect 候选框生成；此前单卡预热后约 9.3 秒。
+两次测试的编译缓存状态不同，首次耗时不宜直接比较，其他任务需另行测量。
+
+Python API 同样支持 `VLXSeekWorker(model_path, tp_size=2)`，脚本必须用
+`torchrun --standalone --nproc-per-node=2` 启动，且两个进程需按相同顺序调用
+推理 API，并传入相同图片、问题、候选框及生成参数。随机采样的种子会在两卡间同步。
+退出时可调用 `vlx_seek.parallel.shutdown_tensor_parallel()` 释放进程组。
 
 ## 昇腾 910B（aarch64）Docker 推理
 
@@ -253,12 +339,7 @@ docker exec -it seek-dev bash
 在 `/workspace` 下运行：
 
 ```bash
-VLX_SEEK_BACKEND=ascend VLX_SEEK_NPU_FLA=full python inference.py \
-  --model-path omlab/VLX-Seek-1.5-10B \
-  --image-path demo/demo_image.jpg \
-  --task detection \
-  --text "橘子; 苹果" \
-  --lang zh
+bash scripts/run_910b.sh
 ```
 
 昇腾后端会导入 `torch_npu`，并将候选框检测器和 VLX-Seek 显式放置到 NPU 上，不会全局改写 CUDA API。镜像不包含模型权重，首次运行会下载主模型及需要的候选框检测器。如使用本地权重，将参数改为 `--model-path resources/VLX-Seek-1.5-10B`。结果和可视化文件保存到宿主机挂载的仓库目录，使用方式与上文一致。

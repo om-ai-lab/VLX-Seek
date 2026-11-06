@@ -70,6 +70,8 @@ def parse_args() -> argparse.Namespace:
         help="Override VLX_SEEK_BACKEND, e.g. cuda:0, npu:0, mps, or cpu; default: auto.",
     )
     parser.add_argument("--max-new-tokens", type=int, default=2048)
+    parser.add_argument("--tp-size", "--tp", type=int, choices=(1, 2), default=1,
+                        help="Ascend tensor parallelism; TP=2 requires torchrun with two processes.")
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--top-p", type=float, default=1.0)
     parser.add_argument(
@@ -251,12 +253,12 @@ def default_visualization_output(image_path: str) -> str:
     return str(path.with_name(f"{path.stem}_result.png"))
 
 
-def main() -> None:
-    args = parse_args()
+def _run_inference(args) -> None:
     from vlx_seek.hardware import resolve_device
+    from vlx_seek.parallel import initialize_tensor_parallel, is_main_process, run_on_rank_zero
 
-    device = resolve_device(args.device)
-    print(f"VLX-Seek inference device: {device}", file=sys.stderr)
+    device = initialize_tensor_parallel(resolve_device(args.device), args.tp_size)
+    print(f"VLX-Seek inference device: {device}, TP={args.tp_size}", file=sys.stderr)
     # Keep --help usable in environments that do not have VLX-Seek's required
     # Qwen3.5-enabled transformers build installed.
     from vlx_seek_worker import VLXSeekWorker
@@ -274,7 +276,10 @@ def main() -> None:
     if args.task in proposal_tasks:
         boxes = load_boxes(args.bbox_list)
         if boxes is None:
-            boxes = load_wedetect_proposals(image, args.detector_checkpoint, device=device)
+            boxes = run_on_rank_zero(
+                lambda: load_wedetect_proposals(image, args.detector_checkpoint, device=device),
+                args.tp_size,
+            )
         else:
             print(f"Using {len(boxes)} proposals from --bbox-list.", file=sys.stderr)
     target_region_indexes = (
@@ -282,7 +287,7 @@ def main() -> None:
         if args.task in {"brief_region_caption", "region_ocr"}
         else None
     )
-    worker = VLXSeekWorker(args.model_path, device=device)
+    worker = VLXSeekWorker(args.model_path, device=device, tp_size=args.tp_size)
     generation_kwargs = {
         "max_new_tokens": args.max_new_tokens,
         "temperature": args.temperature,
@@ -302,7 +307,8 @@ def main() -> None:
                 lang=args.lang,
                 **generation_kwargs,
             )
-            print("time:", time.time() - s)
+            if is_main_process(args.tp_size):
+                print("time:", time.time() - s)
     elif args.task == "grounding_single":
         result = worker.ground(
             image,
@@ -344,6 +350,8 @@ def main() -> None:
             **generation_kwargs,
         )
 
+    if not is_main_process(args.tp_size):
+        return
     if args.visualize and result.get("result_bbox_list"):
         output_path = args.visualization_output or default_visualization_output(
             args.image_path
@@ -353,6 +361,16 @@ def main() -> None:
         )
 
     print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+def main() -> None:
+    args = parse_args()
+    try:
+        _run_inference(args)
+    finally:
+        if args.tp_size > 1:
+            from vlx_seek.parallel import shutdown_tensor_parallel
+            shutdown_tensor_parallel()
 
 
 if __name__ == "__main__":

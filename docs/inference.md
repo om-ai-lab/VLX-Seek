@@ -40,7 +40,7 @@ Use `VLX_SEEK_BACKEND` to select hardware for both the CLI and `VLXSeekWorker`:
 | --- | --- |
 | `auto` (default) | Detect NVIDIA CUDA first, then Ascend NPU, then Apple MPS, otherwise CPU |
 | `nvidia` | NVIDIA GPU with CUDA |
-| `ascend` | Ascend NPU; currently tested on 910B |
+| `ascend` / `310p` | Ascend NPU; tested on 910B and 310P3 |
 | `cpu` | CPU with SDPA attention |
 | `apple` / `mps` | Apple Silicon GPU with MPS and SDPA attention |
 
@@ -80,7 +80,7 @@ pip install -r requirements_mac.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 Run inference in the activated environment:
 
 ```bash
-python inference.py --device mps --task detection --text "orange; apple"
+bash scripts/run_mac.sh
 ```
 
 MPS uses FP16 model weights, SDPA attention, and the PyTorch Linear Attention implementation. The proposal detector also runs on MPS. ROIAlign runs in FP32 on CPU and returns features to MPS because torchvision has no native MPS ROIAlign kernel. This path does not require Flash Attention, Triton, or CUDA FLA kernels.
@@ -93,7 +93,7 @@ The model uses Linear Attention layers. Without the corresponding acceleration k
 The fast path is not available because one of the required library is not installed. Falling back to torch implementation.
 ```
 
-On NVIDIA GPUs, installing [flash-linear-attention](https://github.com/fla-org/flash-linear-attention#installation) and [causal-conv1d](https://github.com/Dao-AILab/causal-conv1d) enables the fast path. For NPU acceleration, see the [Ascend 910B instructions](#docker-inference-on-ascend-910b-aarch64) below.
+On NVIDIA GPUs, installing [flash-linear-attention](https://github.com/fla-org/flash-linear-attention#installation) and [causal-conv1d](https://github.com/Dao-AILab/causal-conv1d) enables the fast path. For NPU acceleration, see the [Ascend 310P](#docker-inference-on-ascend-310p-aarch64) and [910B](#docker-inference-on-ascend-910b-aarch64) instructions below.
 
 ## Docker Inference on NVIDIA x86 (e.g. A100)
 
@@ -150,11 +150,7 @@ The command mounts the repository at `/workspace` and sets it as the working dir
 ### Run Inference Inside the Container
 
 ```bash
-python inference.py \
-  --model-path omlab/VLX-Seek-1.5-10B \
-  --image-path demo/demo_image.jpg \
-  --task detection \
-  --text "orange; apple"
+bash scripts/run_nvidia_x86.sh
 ```
 
 The first run requires access to Hugging Face to download the main model and, when proposals are needed, `resources/wedetect_base_uni.pth`. To use a local main-model checkpoint, place it in the host repository's `resources/VLX-Seek-1.5-10B/` directory and use `--model-path resources/VLX-Seek-1.5-10B` instead. The Docker image does not bundle model weights.
@@ -217,7 +213,106 @@ docker exec -it seek-dev bash
 
 `docker run` pulls the selected image if it is not available locally. Both commands mount the repository at `/workspace`, publish container port `8000` on host port `1233`, and use the container name `seek-dev`. Stop and remove an existing container with that name before switching platforms.
 
-Run the inference command in the NVIDIA x86 section from `/workspace` inside the container. Model downloads, local weight paths, and output paths work the same way as described there.
+From `/workspace` inside either container, run `bash scripts/run_t5000.sh` or
+`bash scripts/run_spark_gb10.sh`, respectively. Model downloads and local weight
+paths work as described in the NVIDIA x86 section.
+
+## Docker Inference on Ascend 310P (aarch64)
+
+Use the published 310P image on a Linux aarch64 host with an Ascend 310P NPU.
+The image is `registry.linker.cc/vlx/vlx-seek:py3.11-openeuler24.03-310p-aarch64`;
+it contains the AscendC GDN operator package at `/opt/ascend/custom_transformer`.
+The host needs Docker and a working Ascend driver. From the repository root, pull
+the image and start a container with the project mounted (no `.cache` mount is needed):
+
+```bash
+docker pull registry.linker.cc/vlx/vlx-seek:py3.11-openeuler24.03-310p-aarch64
+docker run -d --name seek-dev \
+  --entrypoint sleep \
+  --device /dev/davinci0 \
+  --device /dev/davinci_manager \
+  --device /dev/devmm_svm \
+  --device /dev/hisi_hdc \
+  --shm-size=10g \
+  -v /usr/local/dcmi:/usr/local/dcmi \
+  -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi \
+  -v /usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64 \
+  -v /usr/local/Ascend/driver/version.info:/usr/local/Ascend/driver/version.info \
+  -v /etc/ascend_install.info:/etc/ascend_install.info \
+  -v "$PWD:/workspace" -w /workspace \
+  -e VLX_SEEK_BACKEND=ascend \
+  registry.linker.cc/vlx/vlx-seek:py3.11-openeuler24.03-310p-aarch64 \
+  infinity
+docker exec -it seek-dev bash
+```
+
+Replace `/dev/davinci0` with the device selected using `npu-smi info` if needed.
+The repository mount provides source code and output paths; the image supplies the
+310P operator package and Python dependencies.
+
+Run inference inside the container:
+
+```bash
+cd /workspace
+bash scripts/run_310p.sh
+```
+
+The actual chip selects the compatibility path: FP16 weights and SDPA attention
+on 310P. The image includes the AscendC GDN operator package; no `.cache` volume
+mount or runtime `set_env.bash` is needed. With that image, `full` uses AscendC for supported GDN
+calls. An image without the package falls back to PyTorch linear attention.
+See [310P FLA setup](npu_fla_zh.md#ascend-npu-的-fla-推理加速) to build the image.
+
+The `torchvision::nms` CPU fallback warning does not prevent inference. Compare
+cold and warmed inference times separately because the first call may compile
+operators. This validation covers inference; training on 310P has not been tested.
+
+With 310P3, CANN 9.0.1, PyTorch 2.9.0, torch_npu 2.9.0.post4,
+and Transformers 5.13.0, the default detection example completed 10 runs. The
+final result identified five oranges and two apples using 19 generated tokens.
+The first run took about 59.4 seconds and subsequent runs about 9.3 seconds each,
+excluding model loading and WeDetect proposals. Other inputs require their
+own accuracy and performance evaluation.
+
+#### Two-Device Tensor Parallelism (TP=2)
+
+The two logical 310P3 devices on the tested machine passed HCCL AllReduce /
+AllGather and two-device detection. Inside the container, launch detection with:
+
+```bash
+cd /workspace
+TP_SIZE=2 bash scripts/run_310p.sh
+```
+
+To launch detection with `torchrun` directly:
+
+```bash
+torchrun --standalone --nproc-per-node=2 inference.py \
+  --tp-size 2 --task detection --text "orange; apple"
+```
+
+`--tp 2` aliases `--tp-size 2`. Processes bind to `npu:0` and `npu:1`; omit a
+fixed `--device npu:0`. Single-device inference remains the default. Transformers'
+TP plan shards text attention and MLP projections; the language output head is
+also sharded. Vision encoders, token embeddings, and some linear-attention work
+are replicated, so neither memory nor latency is expected to halve. The 310P
+FP16 / SDPA path still applies; GDN follows the AscendC package availability
+described above. WeDetect runs only on
+rank 0 and shares proposals over a CPU Gloo group. Only rank 0 writes results
+and visualizations. Other 310P board combinations require HCCL verification.
+
+The same detection example completed 10 TP=2 runs: about 24.0 seconds for the
+first call and a mean of 5.946 seconds for the remaining nine. The final answer
+and boxes matched the earlier single-device example, with 19 generated tokens.
+These times exclude weight loading and WeDetect proposals. Earlier warmed
+single-device runs took about 9.3 seconds. Compilation cache states differed,
+so first-call times are not directly comparable; measure other tasks separately.
+
+The Python API accepts `VLXSeekWorker(model_path, tp_size=2)`. Launch the script
+with `torchrun --standalone --nproc-per-node=2`. Both ranks must call inference
+in the same order with identical images, questions, proposals, and generation
+options. Sampling seeds are synchronized between ranks. Call
+`vlx_seek.parallel.shutdown_tensor_parallel()` on exit to release process groups.
 
 ## Docker Inference on Ascend 910B (aarch64)
 
@@ -256,11 +351,7 @@ Replace `/dev/davinci0` with the host device selected using `npu-smi info`, for 
 Run from `/workspace`:
 
 ```bash
-VLX_SEEK_BACKEND=ascend VLX_SEEK_NPU_FLA=full python inference.py \
-  --model-path omlab/VLX-Seek-1.5-10B \
-  --image-path demo/demo_image.jpg \
-  --task detection \
-  --text "orange; apple"
+bash scripts/run_910b.sh
 ```
 
 The Ascend backend imports `torch_npu` and places both the proposal detector and VLX-Seek on NPU explicitly. It does not globally replace CUDA APIs. The image does not include model weights. The first run downloads the main model and, if needed, the proposal detector. To use local weights, set `--model-path resources/VLX-Seek-1.5-10B`. Results and the visualization are saved in the mounted repository as described above.

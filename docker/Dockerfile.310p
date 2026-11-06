@@ -1,0 +1,17 @@
+FROM swr.cn-south-1.myhuaweicloud.com/ascendhub/mindie:3.1.0-cann9.0.1-torch_npu2.9.0.post4-310p-openeuler24.03_lts-py3.11
+
+# Keep only the built ACLNN operator package in the image; the vLLM Ascend
+# source checkout and its build tree stay in the build context on the host.
+COPY .cache/vllm-ascend-310p/vllm_ascend/_cann_ops_custom/vendors/custom_transformer /opt/ascend/custom_transformer
+ENV ASCEND_CUSTOM_OPP_PATH=/opt/ascend/custom_transformer
+ENV LD_LIBRARY_PATH=/opt/ascend/custom_transformer/op_api/lib:${LD_LIBRARY_PATH}
+
+RUN pip install timm --no-cache-dir --constraint <(echo "torch==2.9.0")
+
+RUN pip install triton-ascend==3.2.2 --extra-index-url=https://triton-ascend.osinfra.cn/pypi/simple
+
+RUN pip install flash-linear-attention[npu] --constraint <(echo "torch==2.9.0")
+
+COPY docker/requirements_npu.txt docker/requirements_npu.txt
+
+RUN pip install -r docker/requirements_npu.txt -i https://pypi.tuna.tsinghua.edu.cn/simple

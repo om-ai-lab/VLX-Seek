@@ -1,26 +1,33 @@
 from transformers import AutoTokenizer
 from vlx_seek.hardware import attention_implementation, inference_dtype, resolve_device
+from vlx_seek.parallel import initialize_tensor_parallel
 
 
-def load_pretrained_model(model_path, device=None, dtype=None):
+def load_pretrained_model(model_path, device=None, dtype=None, tp_size=1):
     """Load a VLX-Seek model and its primary/auxiliary image processors.
 
     Args:
         model_path: Local checkpoint directory or Hugging Face model identifier.
         device: Explicit device override; otherwise use VLX_SEEK_BACKEND.
-        dtype: Model/vision precision; defaults to FP16 on MPS, BF16 otherwise.
+        dtype: Model/vision precision; FP16 on MPS and NPUs without BF16 support,
+            otherwise BF16.
+        tp_size: Ascend tensor-parallel degree (1 or 2); launch all ranks with torchrun.
 
     Returns:
         The tokenizer, loaded model, and a tuple containing primary and
         optional auxiliary image processors.
     """
-    device = resolve_device(device)
+    device = initialize_tensor_parallel(resolve_device(device), tp_size)
     if dtype is None:
         dtype = inference_dtype(device)
     from vlx_seek.models.vlx_seek_1_5 import VLXSeek1_5ForCausalLM
 
     # Keep the model placement configuration consistent with Transformers.
-    kwargs = {"device_map": device, "dtype": dtype}
+    kwargs = {"dtype": dtype}
+    if tp_size > 1:
+        kwargs.update(tp_plan="auto", tp_size=tp_size)
+    else:
+        kwargs["device_map"] = device
 
     if 'vlx-seek' in model_path.lower(): 
         # Load the language model and checkpoint-provided multimodal modules.

@@ -8,8 +8,36 @@
 Transformers 5.13.0、FLA/fla-core 0.5.0 和 triton-ascend 3.2.2。
 需要 Ascend Triton 后端，只有常规 CUDA Triton 的环境无法运行 NPU 内核。
 
+310P 使用单独的 AscendC ACLNN 适配器，不支持本页的 Ascend Triton 内核。
+没有安装并配置 310P 自定义算子包时，继续使用 PyTorch 线性注意力；配置后，
+`decode` 模式将逐 token GDN 解码切换到 AscendC，`full` 还会将预填充中的
+状态更新和输出阶段切换到 AscendC，WY 分块求解仍由 PyTorch 执行。因果卷积
+仍使用 PyTorch。FP16、头维度 128、稠密序列等不符合适配器限制的调用也会回退。
+
+310P 镜像构建时会将已编译的 ACLNN 算子包放入
+`/opt/ascend/custom_transformer`，并设置 `ASCEND_CUSTOM_OPP_PATH` 和
+`LD_LIBRARY_PATH`。从仓库根目录构建镜像时，Docker 构建上下文只包含这份算子包，
+无需挂载或复制整个 `.cache` 目录：
+
 ```bash
-docker exec -w /workspace seek-dev bash run.sh
+docker build -f docker/Dockerfile.310p -t vlx-seek:310p .
+VLX_SEEK_NPU_FLA=full python inference.py --task detection --text "orange; apple"
+```
+
+若自行替换算子包，需重新构建镜像。桥接层首次启动时会编译一次 C++ 扩展，
+缓存使用 PyTorch 的用户缓存目录（可用 `TORCH_EXTENSIONS_DIR` 覆盖），不写入项目
+`.cache`。预填充输出算子在该版本的多任务长序列
+调度下会破坏结果，因此适配器按 batch、每 64 token 分块单独调用输出算子；
+该方案已在当前 310P3 环境完成数值对照，其他卡型和 CANN 版本需重新验证。
+当前 310P3 实测使用默认检测示例、同一模型实例和相同候选框，预热后每种模式
+运行 3 次：`off` 平均 8.954 秒，`decode` 平均 8.930 秒，`full` 平均 8.913 秒。
+三种模式输出一致，均生成 19 个 token；调用计数确认 `decode` 执行 1728 次
+recurrent 算子，`full` 执行 96 次 chunk 算子及 3456 次 recurrent 算子。
+该样例的端到端差异小于 0.5%，不足以确认整体提速；其他输入需另行测量。
+详情见[310P 推理说明](inference_zh.md#昇腾-310p)。
+
+```bash
+docker exec -w /workspace seek-dev bash scripts/run_910b.sh
 ```
 
 模型加载后会出现明确的启用日志：
@@ -31,8 +59,8 @@ Transformers 在模型构造时可能先打印 `The fast path is not available`�
 | `off` | 原 PyTorch 路径，适合性能对照 |
 
 ```bash
-docker exec -e VLX_SEEK_NPU_FLA=off -w /workspace seek-dev bash run.sh
-docker exec -e VLX_SEEK_NPU_FLA=decode -w /workspace seek-dev bash run.sh
+docker exec -e VLX_SEEK_NPU_FLA=off -w /workspace seek-dev bash scripts/run_910b.sh
+docker exec -e VLX_SEEK_NPU_FLA=decode -w /workspace seek-dev bash scripts/run_910b.sh
 ```
 
 预填充保留 FLA 的归一化、分块求解和状态更新内核，输出阶段使用本仓库的
@@ -51,14 +79,13 @@ Ascend Triton 内核：每次处理 16 行，注意力和缓存的块大小仍�
 说明模型已接入内核，不表示编译已经完成。Ctrl+C 后出现的
 `SIGINT`、`main process disappeared` 等错误是中断编译产生的退出错误。
 
-`bash run.sh` 默认把 Triton 缓存写入当前工作目录的 `.cache/triton`。
-在 `/workspace` 下执行时，该目录随代码挂载保留，重建容器后也可复用。
-通过 `TRITON_CACHE_DIR` 可以指定其他目录；直接执行 `python inference.py`
-时也需要设置该变量才能使用这份缓存。更换编译器、设备或输入形状可能
-触发新的编译，缓存不能保证完全消除冷启动。
+910B 的 Ascend Triton 内核缓存使用 Triton 的用户缓存目录。运行时不需要挂载
+项目 `.cache`；若容器被删除重建，容器内的编译缓存会随之丢失，之后首次运行
+会重新编译。也可以用 `TRITON_CACHE_DIR` 指定容器内其他可写目录。更换编译器、
+设备或输入形状可能触发新的编译，缓存不能保证完全消除冷启动。
 
 ```bash
-TRITON_CACHE_DIR=/workspace/.cache/triton VLX_SEEK_NPU_FLA=full python inference.py
+TRITON_CACHE_DIR=/tmp/triton-cache VLX_SEEK_NPU_FLA=full python inference.py
 ```
 
 2026-10-14 重建容器后的一次复测，复用之前中断运行已生成的部分缓存，

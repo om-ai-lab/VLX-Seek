@@ -329,6 +329,8 @@ class VLXSeek1_5ForCausalLM(Qwen3_5ForConditionalGeneration, OmChatMetaForCausal
         self.lm_head = nn.Linear(config.text_config.hidden_size, config.text_config.vocab_size, bias=False)
 
         self.post_init()
+        # The conditional-generation base omits the language head from its TP plan.
+        self._tp_plan["lm_head"] = "colwise_gather_output"
     
     def get_model(self):
         return self.model

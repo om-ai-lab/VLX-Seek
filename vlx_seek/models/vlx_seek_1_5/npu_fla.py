@@ -11,6 +11,8 @@ import time
 
 import torch
 
+from vlx_seek.hardware import is_ascend_310p
+
 logger = logging.getLogger(__name__)
 _ready_signatures = set()
 
@@ -18,9 +20,11 @@ _ready_signatures = set()
 class NPUFLARule:
     """Use FLA for NPU inference and retain the original training/CPU path."""
 
-    def __init__(self, kernel, fallback):
+    def __init__(self, kernel, fallback, backend="Triton", supports=None):
         self.kernel = kernel
         self.fallback = fallback
+        self.backend = backend
+        self.supports = supports
 
     def __call__(
         self, query, key, value, g, beta, initial_state=None,
@@ -36,6 +40,7 @@ class NPUFLARule:
             query.device.type != "npu"
             or query.dtype not in (torch.float16, torch.bfloat16)
             or torch.is_grad_enabled()
+            or (self.supports is not None and not self.supports(query, key, value, **options))
         ):
             return self.fallback(query, key, value, **options)
         signature = (
@@ -47,17 +52,17 @@ class NPUFLARule:
         name = self.kernel.__name__
         logger.warning(
             "NPU FLA first call starting: %s, shape=%s. "
-            "A cold Triton cache may require several minutes of compilation. Cache: %s",
-            name, tuple(query.shape),
-            os.environ.get("TRITON_CACHE_DIR", "~/.triton/cache"),
+            "Backend: %s. Cache: %s",
+            name, tuple(query.shape), self.backend,
+            os.environ.get("TRITON_CACHE_DIR", "~/.triton/cache") if self.backend == "Triton" else "310P AscendC operator package",
         )
         started = time.perf_counter()
         result = self.kernel(query, key, value, **options)
         torch.npu.synchronize(query.device)
         _ready_signatures.add(signature)
         logger.warning(
-            "NPU FLA first call completed: %s in %.2f seconds (compilation + execution).",
-            name, time.perf_counter() - started,
+            "NPU FLA first call completed: %s in %.2f seconds (backend=%s).",
+            name, time.perf_counter() - started, self.backend,
         )
         return result
 
@@ -88,6 +93,40 @@ def enable_npu_fla(model):
     ]
     if not layers:
         return 0
+
+    if any(is_ascend_310p(layer.in_proj_qkv.weight.device) for layer in layers):
+        from functools import partial
+        from .npu_fla_310p import (
+            chunk_gated_delta_rule as chunk_310p,
+            recurrent_gated_delta_rule as recurrent_310p,
+            load_ascendc_310p, supports_310p,
+        )
+        try:
+            available = load_ascendc_310p()
+        except (OSError, RuntimeError) as exc:
+            logger.warning("310P AscendC bridge unavailable; using PyTorch linear attention: %s", exc)
+            return 0
+        if not available:
+            logger.warning("310P AscendC GDN package not configured; using PyTorch linear attention. Set ASCEND_CUSTOM_OPP_PATH to the installed custom-op package before starting Python to enable acceleration.")
+            return 0
+        for layer in layers:
+            if mode == "decode" and isinstance(layer.chunk_gated_delta_rule, NPUFLARule):
+                layer.chunk_gated_delta_rule = layer.chunk_gated_delta_rule.fallback
+            if mode == "full" and not isinstance(layer.chunk_gated_delta_rule, NPUFLARule):
+                layer.chunk_gated_delta_rule = NPUFLARule(
+                    chunk_310p, layer.chunk_gated_delta_rule, backend="AscendC",
+                    supports=partial(supports_310p, prefill=True),
+                )
+            if not isinstance(layer.recurrent_gated_delta_rule, NPUFLARule):
+                layer.recurrent_gated_delta_rule = NPUFLARule(
+                    recurrent_310p, layer.recurrent_gated_delta_rule, backend="AscendC",
+                    supports=supports_310p,
+                )
+        logger.warning(
+            "NPU FLA enabled on %d linear-attention layers: backend=310P AscendC, prefill=%s, decode=AscendC. Causal convolution uses PyTorch; unsupported shapes use PyTorch.",
+            len(layers), "PyTorch WY + AscendC" if mode == "full" else "PyTorch",
+        )
+        return len(layers)
 
     try:
         import triton

@@ -2,4 +2,13 @@
 .codex
 .vscode
 causal-conv1d/
+# Keep the built 310P custom-op bundle available to Dockerfile.310p only.
+.cache/**
+!.cache/
+!.cache/vllm-ascend-310p/
+!.cache/vllm-ascend-310p/vllm_ascend/
+!.cache/vllm-ascend-310p/vllm_ascend/_cann_ops_custom/
+!.cache/vllm-ascend-310p/vllm_ascend/_cann_ops_custom/vendors/
+!.cache/vllm-ascend-310p/vllm_ascend/_cann_ops_custom/vendors/custom_transformer/
+!.cache/vllm-ascend-310p/vllm_ascend/_cann_ops_custom/vendors/custom_transformer/**
 resources/

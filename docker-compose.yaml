@@ -1,9 +1,8 @@
 services:
   seek-dev:
     # image: swr.cn-south-1.myhuaweicloud.com/ascendhub/mindie:3.1.0-cann9.0.1-torch_npu2.9.0.post4-910b-openeuler24.03_lts-py3.11
-    image: registry.linker.cc/vlx/vlx-seek:py3.11-openeuler24.03-910b-aarch64
+    image: swr.cn-south-1.myhuaweicloud.com/ascendhub/mindie:3.1.0-cann9.0.1-torch_npu2.9.0.post4-310p-openeuler24.03_lts-py3.11
     container_name: seek-dev
-    # entrypoint: sleep 100000000000000000000
     entrypoint: sleep infinity
     shm_size: 10g
     ports:
@@ -13,7 +12,8 @@ services:
       - MAX_MODEL_LENGTH=32768
       - TZ=Asia/Shanghai
     devices:
-      - /dev/davinci2
+      - /dev/davinci0
+      - /dev/davinci1
       # - /dev/davinci3
       # - /dev/davinci4
       # - /dev/davinci5
@@ -26,7 +26,6 @@ services:
       - /dev/hisi_hdc
     volumes:
       - /usr/local/dcmi:/usr/local/dcmi
-      - /usr/local/Ascend/driver/tools/hccn_tool:/usr/local/Ascend/driver/tools/hccn_tool
       - /usr/local/bin/npu-smi:/usr/local/bin/npu-smi
       - /usr/local/Ascend/driver/lib64/:/usr/local/Ascend/driver/lib64/
       - /usr/local/Ascend/driver/version.info:/usr/local/Ascend/driver/version.info

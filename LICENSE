@@ -1,16 +1,13 @@
-                                 Apache License
-                           Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+OmAI Model License v1.0
 
    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
    1. Definitions.
 
       "License" shall mean the terms and conditions for use, reproduction,
-      and distribution as defined by Sections 1 through 9 of this document.
+      and distribution as defined by Sections 1 through 11 of this document.
 
-      "Licensor" shall mean the copyright owner or entity authorized by
-      the copyright owner that is granting the License.
+      "Licensor" means Hangzhou OmAI Technology Co., Ltd. ("OmAI").
 
       "Legal Entity" shall mean the union of the acting entity and all
       other entities that control, are controlled by, or are under common
@@ -32,10 +29,10 @@
       not limited to compiled object code, generated documentation,
       and conversions to other media types.
 
-      "Work" shall mean the work of authorship, whether in Source or
-      Object form, made available under the License, as indicated by a
-      copyright notice that is included in or attached to the work
-      (an example is provided in the Appendix below).
+      "Work" means the model weights, checkpoint files, and associated
+      configuration files that OmAI identifies as covered by this License in
+      the model card or accompanying release documentation. Third-party
+      material licensed separately remains subject to its own terms.
 
       "Derivative Works" shall mean any work, whether in Source or Object
       form, that is based on (or derived from) the Work and for which the
@@ -63,17 +60,37 @@
       on behalf of whom a Contribution has been received by Licensor and
       subsequently incorporated within the Work.
 
+      For purposes of this License, fine-tunes, quantizations, conversions,
+      and merges that modify or incorporate the Work's weights are
+      Derivative Works. Using an adapter with the Work is use of the Work.
+
+      "Commercial Use" means exercising rights in the Work or a Derivative
+      Work for direct or indirect commercial advantage or monetary
+      compensation. It includes use in internal business operations, paid
+      products or deployments, and paid hosted services.
+
+      "Annual Revenue" means total worldwide revenue from all activities of
+      You or, if You are a Legal Entity, of all entities comprising that
+      Legal Entity, for the most recently completed fiscal year. Calculate
+      it on a consolidated basis or aggregate revenue and exclude
+      transactions between those entities. Before the first completed fiscal
+      year, use actual revenue earned to date. Convert amounts to U.S.
+      dollars using a recognized exchange rate for the relevant period,
+      applied consistently.
+
    2. Grant of Copyright License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      copyright license to reproduce, prepare Derivative Works of,
-      publicly display, publicly perform, sublicense, and distribute the
-      Work and such Derivative Works in Source or Object form.
+      this License, including Section 5, each Contributor hereby grants to
+      You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
+      irrevocable copyright license, subject to Section 11, to use,
+      reproduce, prepare Derivative Works of, publicly display, publicly
+      perform, sublicense, and distribute the Work and such Derivative
+      Works in Source or Object form.
 
    3. Grant of Patent License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      (except as stated in this section) patent license to make, have made,
+      this License, including Section 5, each Contributor hereby grants to
+      You a perpetual, worldwide, non-exclusive, no-charge, royalty-free,
+      irrevocable patent license, subject to this section and Section 11,
+      to make, have made,
       use, offer to sell, sell, import, and otherwise transfer the Work,
       where such license applies only to those patent claims licensable
       by such Contributor that are necessarily infringed by their
@@ -89,7 +106,7 @@
    4. Redistribution. You may reproduce and distribute copies of the
       Work or Derivative Works thereof in any medium, with or without
       modifications, and in Source or Object form, provided that You
-      meet the following conditions:
+      comply with Section 5 and meet the following conditions:
 
       (a) You must give any other recipients of the Work or
           Derivative Works a copy of this License; and
@@ -127,7 +144,30 @@
       reproduction, and distribution of the Work otherwise complies with
       the conditions stated in this License.
 
-   5. Submission of Contributions. Unless You explicitly state otherwise,
+      Any sublicense or additional terms for a Derivative Work leave Section
+      5 applicable to the Work and Derivative Works. Each recipient must
+      independently qualify under Section 5 or be covered by a separate
+      written agreement with OmAI.
+
+   5. Commercial Use Limitation.
+
+      (a) You may make Commercial Use of the Work or a Derivative Work under
+      this License only while Your Annual Revenue is below US$10,000,000. At
+      or above US$10,000,000, You must obtain a separate written commercial
+      license from OmAI before making or continuing Commercial Use.
+
+      (b) Non-commercial use, including non-commercial research and
+      evaluation, is permitted regardless of Annual Revenue. This includes
+      non-commercial activities in furtherance of a non-profit organization's
+      mission, including research and education. For purposes of this License,
+      conducting those activities as part of the organization's internal
+      operations does not, by itself, constitute Commercial Use.
+
+      Hosting the Work or a Derivative Work solely to provide free downloads
+      under Section 4 is permitted regardless of Annual Revenue. Recipients
+      remain subject to this License.
+
+   6. Submission of Contributions. Unless You explicitly state otherwise,
       any Contribution intentionally submitted for inclusion in the Work
       by You to the Licensor shall be under the terms and conditions of
       this License, without any additional terms or conditions.
@@ -135,12 +175,12 @@
       the terms of any separate license agreement you may have executed
       with Licensor regarding such Contributions.
 
-   6. Trademarks. This License does not grant permission to use the trade
+   7. Trademarks. This License does not grant permission to use the trade
       names, trademarks, service marks, or product names of the Licensor,
       except as required for reasonable and customary use in describing the
       origin of the Work and reproducing the content of the NOTICE file.
 
-   7. Disclaimer of Warranty. Unless required by applicable law or
+   8. Disclaimer of Warranty. Unless required by applicable law or
       agreed to in writing, Licensor provides the Work (and each
       Contributor provides its Contributions) on an "AS IS" BASIS,
       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
@@ -150,7 +190,7 @@
       appropriateness of using or redistributing the Work and assume any
       risks associated with Your exercise of permissions under this License.
 
-   8. Limitation of Liability. In no event and under no legal theory,
+   9. Limitation of Liability. In no event and under no legal theory,
       whether in tort (including negligence), contract, or otherwise,
       unless required by applicable law (such as deliberate and grossly
       negligent acts) or agreed to in writing, shall any Contributor be
@@ -162,7 +202,7 @@
       other commercial damages or losses), even if such Contributor
       has been advised of the possibility of such damages.
 
-   9. Accepting Warranty or Additional Liability. While redistributing
+   10. Accepting Warranty or Additional Liability. While redistributing
       the Work or Derivative Works thereof, You may choose to offer,
       and charge a fee for, acceptance of support, warranty, indemnity,
       or other liability obligations and/or rights consistent with this
@@ -173,29 +213,14 @@
       incurred by, or claims asserted against, such Contributor by reason
       of your accepting any such warranty or additional liability.
 
+   11. Termination.
+
+      Your rights under this License terminate automatically if You fail to
+      comply with its terms. Upon termination, You must cease exercising
+      those rights and delete all copies of the Work and Derivative Works
+      held under this License, except to the extent applicable law requires
+      retention. Termination does not affect the rights of recipients who
+      received copies in compliance with this License and continue to comply
+      with it. Sections 8 through 11 survive termination.
+
    END OF TERMS AND CONDITIONS
-
-   APPENDIX: How to apply the Apache License to your work.
-
-      To apply the Apache License to your work, attach the following
-      boilerplate notice, with the fields enclosed by brackets "[]"
-      replaced with your own identifying information. (Don't include
-      the brackets!)  The text should be enclosed in the appropriate
-      comment syntax for the file format. We also recommend that a
-      file or class name and description of purpose be included on the
-      same "printed page" as the copyright notice for easier
-      identification within third-party archives.
-
-   Copyright Hangzhou Om AI Technology Ltd. 
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
